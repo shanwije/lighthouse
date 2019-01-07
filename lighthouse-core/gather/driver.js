@@ -534,6 +534,7 @@ class Driver {
 
   /**
    * Returns a promise that resolve when a frame has a FCP.
+   * @return {{promise: Promise<void>, cancel: function(): void}}
    */
   _waitForFCP() {
     /** @type {(() => void)} */
