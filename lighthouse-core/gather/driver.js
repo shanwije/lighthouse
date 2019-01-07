@@ -537,7 +537,7 @@ class Driver {
   _waitForFCP() {
     /** @type {(() => void)} */
     let cancel = () => {
-      throw new Error('_waitForLoadEvent.cancel() called before it was defined');
+      throw new Error('_waitForFCP.cancel() called before it was defined');
     };
 
     const promise = (async () => {
