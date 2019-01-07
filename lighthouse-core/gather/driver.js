@@ -516,6 +516,7 @@ class Driver {
    * Returns a promise that resolves immediately.
    * Used for placeholder conditions that we don't want to start waiting for just yet, but still want
    * to satisfy the same interface.
+   * @return {{promise: Promise<void>, cancel: function(): void}}
    */
   _waitForNothing() {
     return {promise: Promise.resolve(), cancel() {}};
