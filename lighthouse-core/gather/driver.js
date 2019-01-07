@@ -540,25 +540,21 @@ class Driver {
       throw new Error('_waitForFCP.cancel() called before it was defined');
     };
 
-    const promise = (async () => {
-      await this.sendCommand('Page.setLifecycleEventsEnabled', {enabled: true});
-
-      return new Promise(resolve => {
-        /** @param {LH.Crdp.Page.LifecycleEventEvent} e */
-        const lifecycleListener = e => {
-          if (e.name === 'firstContentfulPaint') {
-            resolve();
-            this.off('Page.lifecycleEvent', lifecycleListener);
-          }
-        };
-
-        this.on('Page.lifecycleEvent', lifecycleListener);
-
-        cancel = () => {
+    const promise = new Promise(resolve => {
+      /** @param {LH.Crdp.Page.LifecycleEventEvent} e */
+      const lifecycleListener = e => {
+        if (e.name === 'firstContentfulPaint') {
+          resolve();
           this.off('Page.lifecycleEvent', lifecycleListener);
-        };
-      });
-    })();
+        }
+      };
+
+      this.on('Page.lifecycleEvent', lifecycleListener);
+
+      cancel = () => {
+        this.off('Page.lifecycleEvent', lifecycleListener);
+      };
+    });
 
     return {
       promise,
