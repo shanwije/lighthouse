@@ -107,9 +107,7 @@ class Runner {
       }
 
       // Entering: conclusion of the lighthouse result object
-      const lighthousePackageVersion = require('../package.json').version;
-      const lighthouseChannel = runOpts.config.settings.channel;
-      const lighthouseVersion = `${lighthousePackageVersion}+${lighthouseChannel}`;
+      const lighthouseVersion = require('../package.json').version;
 
       /** @type {Object<string, LH.Audit.Result>} */
       const resultsById = {};
