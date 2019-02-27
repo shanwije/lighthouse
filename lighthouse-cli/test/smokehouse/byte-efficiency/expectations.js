@@ -17,7 +17,7 @@ module.exports = [
         details: {
           overallSavingsBytes: '>17000',
           items: {
-            length: 1,
+            length: 2,
           },
         },
       },
@@ -33,7 +33,7 @@ module.exports = [
       },
       'unused-css-rules': {
         details: {
-          overallSavingsBytes: '>39000',
+          overallSavingsBytes: '>35000',
           items: {
             length: 2,
           },
@@ -98,6 +98,31 @@ module.exports = [
             {wastedPercent: '<60'},
             {wastedPercent: '<60'},
             {wastedPercent: '<60'},
+          ],
+        },
+      },
+    },
+  },
+  {
+    requestedUrl: 'http://localhost:10200/byte-efficiency/gzip.html',
+    finalUrl: 'http://localhost:10200/byte-efficiency/gzip.html',
+    audits: {
+      'network-requests': {
+        details: {
+          items: [
+            {
+              url: 'http://localhost:10200/byte-efficiency/gzip.html',
+            },
+            {
+              url: 'http://localhost:10200/byte-efficiency/script.js?gzip=1',
+              transferSize: 1136,
+              resourceSize: 52997,
+            },
+            {
+              url: 'http://localhost:10200/byte-efficiency/script.js',
+              transferSize: 53181,
+              resourceSize: 52997,
+            },
           ],
         },
       },

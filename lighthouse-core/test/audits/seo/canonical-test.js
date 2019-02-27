@@ -56,7 +56,8 @@ describe('SEO: Document has valid canonical link', () => {
     const context = {computedCache: new Map()};
     return CanonicalAudit.audit(artifacts, context).then(auditResult => {
       assert.equal(auditResult.rawValue, false);
-      assert.ok(auditResult.explanation.includes('Multiple'), auditResult.explanation);
+      expect(auditResult.explanation)
+        .toBeDisplayString('Multiple conflicting URLs (https://example.com, https://www.example.com)');
     });
   });
 
@@ -117,7 +118,8 @@ describe('SEO: Document has valid canonical link', () => {
     const context = {computedCache: new Map()};
     return CanonicalAudit.audit(artifacts, context).then(auditResult => {
       assert.equal(auditResult.rawValue, false);
-      assert.ok(auditResult.explanation.includes('hreflang'), auditResult.explanation);
+      expect(auditResult.explanation)
+        .toBeDisplayString('Points to another `hreflang` location (https://example.com/)');
     });
   });
 
@@ -136,8 +138,28 @@ describe('SEO: Document has valid canonical link', () => {
     const context = {computedCache: new Map()};
     return CanonicalAudit.audit(artifacts, context).then(auditResult => {
       assert.equal(auditResult.rawValue, false);
-      assert.ok(auditResult.explanation.includes('domain'), auditResult.explanation);
+      expect(auditResult.explanation)
+        .toBeDisplayString('Points to a different domain (https://example.com/)');
     });
+  });
+
+  it('passes when canonical points to the root while current URL is also the root', async () => {
+    const finalUrl = 'https://example.com/';
+    const mainResource = {
+      url: finalUrl,
+      responseHeaders: [],
+    };
+    const devtoolsLog = networkRecordsToDevtoolsLog([mainResource]);
+    const artifacts = {
+      devtoolsLogs: {[CanonicalAudit.DEFAULT_PASS]: devtoolsLog},
+      URL: {finalUrl},
+      Canonical: ['https://example.com/'],
+      Hreflang: [],
+    };
+
+    const context = {computedCache: new Map()};
+    const auditResult = await CanonicalAudit.audit(artifacts, context);
+    assert.equal(auditResult.rawValue, true);
   });
 
   it('fails when canonical points to the root while current URL is not the root', () => {
@@ -155,7 +177,8 @@ describe('SEO: Document has valid canonical link', () => {
     const context = {computedCache: new Map()};
     return CanonicalAudit.audit(artifacts, context).then(auditResult => {
       assert.equal(auditResult.rawValue, false);
-      assert.ok(auditResult.explanation.includes('root'), auditResult.explanation);
+      expect(auditResult.explanation).toBeDisplayString('Points to the domain\'s root URL (the ' +
+        'homepage), instead of an equivalent page of content');
     });
   });
 

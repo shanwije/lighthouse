@@ -50,8 +50,8 @@ declare global {
     export interface GathererArtifacts {
       /** The results of running the aXe accessibility tests on the page. */
       Accessibility: Artifacts.Accessibility;
-      /** Information on all anchors in the page that aren't nofollow or noreferrer. */
-      AnchorsWithNoRelNoopener: {href: string; rel: string; target: string, outerHTML: string}[];
+      /** Array of all anchors on the page. */
+      AnchorElements: Artifacts.AnchorElement[];
       /** The value of the page's <html> manifest attribute, or null if not defined */
       AppCacheManifest: string | null;
       /** Array of all URLs cached in CacheStorage. */
@@ -60,8 +60,6 @@ declare global {
       Canonical: (string | null)[];
       /** Console deprecation and intervention warnings logged by Chrome during page load. */
       ChromeConsoleMessages: Crdp.Log.EntryAddedEvent[];
-      /** The href and innerText of all non-nofollow anchors in the page. */
-      CrawlableLinks: {href: string, text: string}[];
       /** CSS coverage information for styles used by page's final state. */
       CSSUsage: {rules: Crdp.CSS.RuleUsage[], stylesheets: Artifacts.CSSStyleSheetInfo[]};
       /** Information on the document's doctype(or null if not present), specifically the name, publicId, and systemId.
@@ -83,7 +81,7 @@ declare global {
       HTMLWithoutJavaScript: {bodyText: string, hasNoScript: boolean};
       /** Whether the page ended up on an HTTPS page after attempting to load the HTTP version. */
       HTTPRedirect: {value: boolean};
-      /** Information on size and loading for all the images in the page. */
+      /** Information on size and loading for all the images in the page. Natural size information for `picture` and CSS images is only available if the image was one of the largest 50 images. */
       ImageElements: Artifacts.ImageElement[];
       /** Information on JS libraries and versions used by the page. */
       JSLibraries: {name: string, version: string, npmPkgName: string}[];
@@ -115,6 +113,8 @@ declare global {
       StartUrl: {statusCode: number, explanation?: string};
       /** Information on <script> and <link> tags blocking first paint. */
       TagsBlockingFirstPaint: Artifacts.TagBlockingFirstPaint[];
+      /** Information about tap targets including their position and size. */
+      TapTargets: Artifacts.TapTarget[];
       /** The dimensions and devicePixelRatio of the loaded viewport. */
       ViewportDimensions: Artifacts.ViewportDimensions;
     }
@@ -184,6 +184,15 @@ declare global {
         crossOrigin: 'anonymous'|'use-credentials'|null
         /** Where the link was found, either in the DOM or in the headers of the main document */
         source: 'head'|'body'|'headers'
+      }
+
+      /** @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#Attributes */
+      export interface AnchorElement {
+        rel: string
+        href: string
+        text: string
+        target: string
+        outerHTML: string
       }
 
       export interface Font {
@@ -304,6 +313,14 @@ declare global {
         right: number;
         bottom: number;
         left: number;
+      }
+
+      export interface TapTarget {
+        snippet: string,
+        selector: string,
+        path: string,
+        href: string,
+        clientRects: Rect[]
       }
 
       export interface ViewportDimensions {
