@@ -57,7 +57,7 @@ describe('SEO: Document has valid canonical link', () => {
     return CanonicalAudit.audit(artifacts, context).then(auditResult => {
       assert.equal(auditResult.rawValue, false);
       expect(auditResult.explanation)
-        .toBeDisplayString('Multiple conflicting URLs (https://example.com, https://www.example.com)');
+        .toBeDisplayString('Multiple conflicting URLs (https://www.example.com, https://example.com)');
     });
   });
 
@@ -77,7 +77,7 @@ describe('SEO: Document has valid canonical link', () => {
     return CanonicalAudit.audit(artifacts, context).then(auditResult => {
       const {rawValue, explanation} = auditResult;
       assert.equal(rawValue, false);
-      assert.ok(explanation.includes('Invalid') && explanation.includes('https:// '), explanation);
+      expect(explanation).toBeDisplayString('Invalid URL (https:// example.com)');
     });
   });
 
@@ -97,7 +97,7 @@ describe('SEO: Document has valid canonical link', () => {
     return CanonicalAudit.audit(artifacts, context).then(auditResult => {
       const {rawValue, explanation} = auditResult;
       assert.equal(rawValue, false);
-      assert.ok(explanation.includes('Relative') && explanation.includes('/'), explanation);
+      expect(explanation).toBeDisplayString('Relative URL (/)');
     });
   });
 
@@ -153,8 +153,9 @@ describe('SEO: Document has valid canonical link', () => {
     const artifacts = {
       devtoolsLogs: {[CanonicalAudit.DEFAULT_PASS]: devtoolsLog},
       URL: {finalUrl},
-      Canonical: ['https://example.com/'],
-      Hreflang: [],
+      LinkElements: [
+        link({rel: 'canonical', source: 'head', href: 'https://example.com'}),
+      ],
     };
 
     const context = {computedCache: new Map()};
