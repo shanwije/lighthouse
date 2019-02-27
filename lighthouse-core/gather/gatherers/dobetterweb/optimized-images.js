@@ -19,8 +19,8 @@ const Driver = require('../../driver.js'); // eslint-disable-line no-unused-vars
 // Image encoding can be slow and we don't want to spend forever on it.
 // Cap our encoding to 5 seconds, anything after that will be estimated.
 const MAX_TIME_TO_SPEND_ENCODING = 5000;
-// Cap our image file size at 1MB, anything bigger than that will be estimated.
-const MAX_RESOURCE_SIZE_TO_ENCODE = 1000 * 1024;
+// Cap our image file size at 2MB, anything bigger than that will be estimated.
+const MAX_RESOURCE_SIZE_TO_ENCODE = 2000 * 1024;
 
 const JPEG_QUALITY = 0.92;
 const WEBP_QUALITY = 0.85;
