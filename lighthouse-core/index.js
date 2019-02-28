@@ -48,7 +48,7 @@ async function lighthouse(url, flags = {}, configJSON, connection) {
   flags.logLevel = flags.logLevel || 'error';
   log.setLevel(flags.logLevel);
 
-  const channelOverride = /** @type {any} */(process.env.LH_CHANNEL) || flags.channel;
+  const channelOverride = process.env.LH_CHANNEL || flags.channel;
   if (channelOverride) {
     flags.channel = channelOverride;
   }

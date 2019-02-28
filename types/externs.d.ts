@@ -117,7 +117,7 @@ declare global {
       // List of extra HTTP Headers to include
       extraHeaders?: Crdp.Network.Headers | null; // See extraHeaders TODO in bin.js
       // How Lighthouse was run, e.g. from the Chrome extension or from the npm module
-      channel?: 'ext' | 'cdt' | 'cli' | 'nm' | 'lr';
+      channel?: string
     }
 
     /**
