@@ -6,23 +6,22 @@
 'use strict';
 
 /**
- * Config file for running byte efficiency smokehouse audits.
+ * Expected Lighthouse audit values for lantern smoketests
  */
-module.exports = {
-  extends: 'lighthouse:full',
-  settings: {
-    onlyAudits: [
-      'network-requests',
-      'offscreen-images',
-      'uses-webp-images',
-      'uses-optimized-images',
-      'uses-text-compression',
-      'uses-responsive-images',
-      'unminified-css',
-      'unminified-javascript',
-      'unused-css-rules',
-      'unused-javascript',
-    ],
-    throttlingMethod: 'devtools',
+module.exports = [
+  {
+    requestedUrl: 'http://localhost:10200/online-only.html',
+    finalUrl: 'http://localhost:10200/online-only.html',
+    audits: {
+      'first-contentful-paint': {
+        rawValue: '>2000',
+      },
+      'first-cpu-idle': {
+        rawValue: '>2000',
+      },
+      'interactive': {
+        rawValue: '>2000',
+      },
+    },
   },
-};
+];

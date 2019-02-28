@@ -11,18 +11,14 @@
 module.exports = {
   extends: 'lighthouse:full',
   settings: {
-    onlyAudits: [
-      'network-requests',
-      'offscreen-images',
-      'uses-webp-images',
-      'uses-optimized-images',
-      'uses-text-compression',
-      'uses-responsive-images',
-      'unminified-css',
-      'unminified-javascript',
-      'unused-css-rules',
-      'unused-javascript',
-    ],
-    throttlingMethod: 'devtools',
+    onlyCategories: ['performance'],
+    precomputedLanternData: {
+      additionalRttByOrigin: {
+        'http://localhost:10200': 500,
+      },
+      serverResponseTimeByOrigin: {
+        'http://localhost:10200': 1000,
+      },
+    },
   },
 };

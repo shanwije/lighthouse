@@ -75,6 +75,11 @@ declare global {
       cpuSlowdownMultiplier?: number
     }
 
+    export interface PrecomputedLanternData {
+      additionalRttByOrigin: {[origin: string]: number};
+      serverResponseTimeByOrigin: {[origin: string]: number};
+    }
+
     export type Locale = 'en-US'|'en'|'en-AU'|'en-GB'|'en-IE'|'en-SG'|'en-ZA'|'en-IN'|'ar-XB'|'ar'|'bg'|'bs'|'ca'|'cs'|'da'|'de'|'el'|'en-XA'|'es'|'fi'|'fil'|'fr'|'he'|'hi'|'hr'|'hu'|'gsw'|'id'|'in'|'it'|'iw'|'ja'|'ko'|'ln'|'lt'|'lv'|'mo'|'nl'|'nb'|'no'|'pl'|'pt'|'pt-PT'|'ro'|'ru'|'sk'|'sl'|'sr'|'sr-Latn'|'sv'|'ta'|'te'|'th'|'tl'|'tr'|'uk'|'vi'|'zh'|'zh-HK'|'zh-TW';
 
     export type OutputMode = 'json' | 'html' | 'csv';
@@ -118,6 +123,8 @@ declare global {
       extraHeaders?: Crdp.Network.Headers | null; // See extraHeaders TODO in bin.js
       // How Lighthouse was run, e.g. from the Chrome extension or from the npm module
       channel?: string
+      // Precomputed lantern estimates to use instead of observed analysis
+      precomputedLanternData?: PrecomputedLanternData | null;
     }
 
     /**
@@ -159,6 +166,10 @@ declare global {
       port: number;
       hostname: string;
       printConfig: boolean;
+      // Path to the file where precomputed lantern data should be read from.
+      precomputedLanternDataPath?: string;
+      // Path to the file where precomputed lantern data should be written to.
+      lanternDataOutputPath?: string;
     }
 
     export interface RunnerResult {
