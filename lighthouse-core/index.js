@@ -48,11 +48,6 @@ async function lighthouse(url, flags = {}, configJSON, connection) {
   flags.logLevel = flags.logLevel || 'error';
   log.setLevel(flags.logLevel);
 
-  const channelOverride = process.env.LH_CHANNEL || flags.channel;
-  if (channelOverride) {
-    flags.channel = channelOverride;
-  }
-
   const config = generateConfig(configJSON, flags);
 
   connection = connection || new ChromeProtocol(flags.port, flags.hostname);

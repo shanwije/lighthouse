@@ -163,7 +163,6 @@ async function saveResults(runnerResult, flags) {
 function runLighthouse(url, flags, config) {
   /** @type {ChromeLauncher.LaunchedChrome|undefined} */
   let launchedChrome;
-  flags.channel = 'cli';
   const shouldGather = flags.gatherMode || flags.gatherMode === flags.auditMode;
   let chromeP = Promise.resolve();
 
