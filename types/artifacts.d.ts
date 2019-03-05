@@ -85,6 +85,8 @@ declare global {
       ImageElements: Artifacts.ImageElement[];
       /** Information on JS libraries and versions used by the page. */
       JSLibraries: {name: string, version: string, npmPkgName: string}[];
+      /** Information on Detected Stacks used by the page. */
+      Stacks: Artifacts.DetectedStack[];
       /** JS coverage information for code used during page load. */
       JsUsage: Crdp.Profiler.ScriptCoverage[];
       /** Parsed version of the page's Web App Manifest, or null if none found. */
@@ -427,6 +429,14 @@ declare global {
          * firstMeaningfulPaintCandidate events had to be attempted.
          */
         fmpFellBack: boolean;
+      }
+
+      export interface DetectedStack {
+        type: string;
+        id: string;
+        name: string;
+        version: string;
+        npm?: string;
       }
     }
   }

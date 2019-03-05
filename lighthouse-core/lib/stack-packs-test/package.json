@@ -1,0 +1,7 @@
+{
+  "name": "@lighthouse/stack-packs",
+  "version": "1.0.0",
+  "description": "Lighthouse",
+  "main": "./stack-packs-package.js",
+  "author": "The Chromium Authors"
+}

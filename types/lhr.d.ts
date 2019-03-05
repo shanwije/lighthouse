@@ -29,9 +29,10 @@ declare global {
 
     export interface StackPacks {
       id: string;
-      icon: string;
-      detectedLibraries: string[];
-      advice: Record<string, string>;
+      title: string;
+      iconDataURL: string;
+      requiredStack: string[];
+      descriptions: Record<string, string>;
     }
 
     /**

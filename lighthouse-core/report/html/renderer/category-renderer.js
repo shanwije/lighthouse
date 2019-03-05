@@ -98,7 +98,7 @@ class CategoryRenderer {
         packElmImg.style.marginRight = '15px';
 
         const packElmSpan = this.dom.createElement('span');
-        packElmSpan.appendChild(this.dom.convertMarkdownLinkSnippets(pack.advice))
+        packElmSpan.appendChild(this.dom.convertMarkdownLinkSnippets(pack.description));
 
         packElm.appendChild(packElmImg);
         packElm.appendChild(packElmSpan);

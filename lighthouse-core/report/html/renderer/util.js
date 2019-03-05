@@ -77,10 +77,10 @@ class Util {
         audit.stackPacks = {};
         clone.stackPacks.forEach(pack => {
           // if advice exist for this audit
-          if (pack.advice[audit.id]) {
+          if (pack.descriptions[audit.id]) {
             audit.stackPacks[pack.id] = {
-              icon: pack.icon,
-              advice: pack.advice[audit.id],
+              icon: pack.iconDataURL,
+              description: pack.descriptions[audit.id],
             };
           }
         });
