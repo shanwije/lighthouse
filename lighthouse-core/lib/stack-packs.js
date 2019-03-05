@@ -27,7 +27,7 @@ function getStackPacks(artifacts) {
         title: pack.title,
         iconDataURL: pack.iconDataURL,
         descriptions: pack.descriptions,
-        requiredStack: [`${stack.type}:${stack.id}`],
+        requiredStack: [`${stack.detector}:${stack.id}`],
       });
     }
   });

@@ -432,7 +432,7 @@ declare global {
       }
 
       export interface DetectedStack {
-        type: string;
+        detector: string;
         id: string;
         name: string;
         version: string;
