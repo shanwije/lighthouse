@@ -88,7 +88,8 @@ class OptimizedImages extends Gatherer {
    */
   async calculateImageStats(driver, networkRecord) {
     const originalSize = networkRecord.resourceSize;
-    // We'll use our heuristic on the audit side for images that are too large and once we've hit our cap.
+    // Once we've hit our execution time limit or when the image is too big, don't try to re-encode it.
+    // Images in this execution path will fallback to byte-per-pixel heuristics on the audit side.
     if (Date.now() - this._encodingStartAt > MAX_TIME_TO_SPEND_ENCODING ||
         originalSize > MAX_RESOURCE_SIZE_TO_ENCODE) {
       return {originalSize, jpegSize: undefined, webpSize: undefined};
