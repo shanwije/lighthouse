@@ -108,13 +108,13 @@ class NoVulnerableLibrariesAudit extends Audit {
     });
 
     const vulns = matchingVulns.map(vuln => {
-        return {
-          severity: vuln.severity,
-          numericSeverity: this.severityMap[vuln.severity],
-          library: `${lib.name}@${normalizedVersion}`,
-          url: 'https://snyk.io/vuln/' + vuln.id,
-        };
-      });
+      return {
+        severity: vuln.severity,
+        numericSeverity: this.severityMap[vuln.severity],
+        library: `${lib.name}@${normalizedVersion}`,
+        url: 'https://snyk.io/vuln/' + vuln.id,
+      };
+    });
 
     return vulns;
   }
