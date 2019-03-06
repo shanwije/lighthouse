@@ -132,6 +132,31 @@ describe('Module Tests', function() {
     });
   });
 
+  it('should specify the channel as node by default', function() {
+    const exampleUrl = 'https://www.reddit.com/r/nba';
+    return lighthouse(exampleUrl, {}, {
+      settings: {
+        auditMode: __dirname + '/fixtures/artifacts/perflog/',
+      },
+      audits: [],
+    }).then(results => {
+      assert.equal(results.lhr.configSettings.channel, 'node');
+    });
+  });
+
+  it('lets consumers pass in a custom channel', function() {
+    const exampleUrl = 'https://www.reddit.com/r/nba';
+    return lighthouse(exampleUrl, {}, {
+      settings: {
+        auditMode: __dirname + '/fixtures/artifacts/perflog/',
+        channel: 'custom',
+      },
+      audits: [],
+    }).then(results => {
+      assert.equal(results.lhr.configSettings.channel, 'custom');
+    });
+  });
+
   it('should return a list of audits', function() {
     assert.ok(Array.isArray(lighthouse.getAuditList()));
   });
