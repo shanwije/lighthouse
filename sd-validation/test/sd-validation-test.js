@@ -5,10 +5,116 @@
  */
 'use strict';
 
-/* eslint-env mocha */
+/* eslint-env jest */
 
 const assert = require('assert');
 const validateJSONLD = require('../');
+
+describe('JSON validation', () => {
+  it('reports missing closing bracket', async () => {
+    const errors = await validateJSONLD(`{
+      "test": "test"
+    `);
+
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0].path, 2);
+    assert.ok(errors[0].message.indexOf(`Expecting '}'`) === 0);
+  });
+
+  it('reports missing comma', async () => {
+    const errors = await validateJSONLD(`{
+      "test": "test"
+      "test2": "test2"
+    }`);
+
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0].path, 2);
+    assert.ok(errors[0].message.indexOf(`Expecting 'EOF', '}', ':', ',', ']'`) === 0);
+  });
+
+  it('reports duplicated property', async () => {
+    const errors = await validateJSONLD(`{
+      "test": "test",
+      "test2": {
+        "test2-1": "test",
+        "test2-1": "test2"
+      }
+    }`);
+
+    assert.equal(errors.length, 1);
+    assert.ok(errors[0].message, `Duplicate key 'test2-1'`);
+  });
+
+  it('parses valid json', async () => {
+    const errors = await validateJSONLD(`{
+      "test": "test",
+      "test2": {
+        "test2-1": "test",
+        "test2-2": "test2"
+      },
+      "test3": null,
+"test4": 123,
+      "test5": [1,2,3]
+    }`);
+
+    assert.equal(errors.length, 0);
+  });
+});
+
+describe('JSON-LD validation', () => {
+  it('reports unknown keywords', async () => {
+    const errors = await validateJSONLD(`{
+      "@type": {},
+      "@context": {},
+      "@test": {}
+    }`);
+
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0].message, 'Unknown keyword');
+    assert.equal(errors[0].path, '@test');
+  });
+
+  it('reports invalid context', async () => {
+    const errors = await validateJSONLD(`{
+      "@context": {"x":"x"}
+    }`);
+
+    assert.equal(errors.length, 1);
+    assert.ok(errors[0].message.indexOf('@context terms must define an @id') !== -1);
+  });
+
+  it('reports invalid keyword value', async () => {
+    const errors = await validateJSONLD(`{
+      "@context": "http://schema.org/",
+      "@type": 23
+    }`);
+
+    assert.equal(errors.length, 1);
+    assert.ok(errors[0].message.indexOf('"@type" value must a string') !== -1);
+  });
+
+  it('reports invalid id value', async () => {
+    const errors = await validateJSONLD(`{
+      "@context": {
+        "image": {
+          "@id": "@error"
+        }
+      }
+    }`);
+
+    assert.equal(errors.length, 1);
+    assert.ok(errors[0].message.indexOf('@id value must be an absolute IRI') !== -1);
+  });
+
+  it('reports invalid context URL', async () => {
+    const errors = await validateJSONLD(`{
+      "@context": "http://"
+    }`);
+
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0].message, 'Error parsing URL: http://');
+  });
+});
 
 describe('schema.org validation', () => {
   it('reports unknown types', async () => {
