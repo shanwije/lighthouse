@@ -5,8 +5,7 @@
  */
 'use strict';
 
-const NoVulnerableLibrariesAudit =
-  require('../../../audits/dobetterweb/no-vulnerable-libraries.js');
+const NoVulnerableLibrariesAudit = require('../../../audits/dobetterweb/no-vulnerable-libraries.js');
 const assert = require('assert');
 
 /* eslint-env jest */
@@ -41,6 +40,26 @@ describe('Avoids front-end JavaScript libraries with known vulnerabilities', () 
     assert.equal(auditResult.details.items[0].detectedLib.type, 'link');
     assert.equal(auditResult.details.items[0].detectedLib.text, 'angular@1.1.4');
     assert.equal(auditResult.details.items[0].detectedLib.url, 'https://snyk.io/vuln/npm:angular?lh=1.1.4&utm_source=lighthouse&utm_medium=ref&utm_campaign=audit');
+  });
+
+  it('fails when JS libraries w/ vulnerabilities are detected (in the semver range array)', () => {
+    const auditResult = NoVulnerableLibrariesAudit.audit({
+      JSLibraries: [{name: 'jquery', version: '2.1.1', npmPkgName: 'jquery'}],
+    });
+    expect(auditResult.details.items).toMatchInlineSnapshot(`
+Array [
+  Object {
+    "detectedLib": Object {
+      "text": "jquery@2.1.1",
+      "type": "link",
+      "url": "https://snyk.io/vuln/npm:jquery?lh=2.1.1&utm_source=lighthouse&utm_medium=ref&utm_campaign=audit",
+    },
+    "highestSeverity": "Medium",
+    "vulnCount": 1,
+  },
+]
+`);
+    assert.equal(auditResult.rawValue, false);
   });
 
   it('handles ill-specified versions', () => {

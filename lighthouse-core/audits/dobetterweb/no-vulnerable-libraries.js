@@ -87,6 +87,7 @@ class NoVulnerableLibrariesAudit extends Audit {
       return [];
     }
 
+    // Verify the version is well-formed first
     try {
       semver.satisfies(normalizedVersion, '*');
     } catch (err) {
@@ -96,11 +97,17 @@ class NoVulnerableLibrariesAudit extends Audit {
       return [];
     }
 
-    const snykInfo = snykDB.npm[lib.npmPkgName];
-    const vulns = snykInfo
-      .filter(vuln => semver.satisfies(normalizedVersion, vuln.semver.vulnerable[0]))
-      // valid vulnerability
-      .map(vuln => {
+    // Match the vulnerability candidates from snyk against the version we see in the page
+    const vulnCandidatesForLib = snykDB.npm[lib.npmPkgName];
+    const matchingVulns = vulnCandidatesForLib.filter(vulnCandidate => {
+      // Each snyk vulnerability comes with an array of semver ranges.
+      const hasMatchingVersion = vulnCandidate.semver.vulnerable.some(vulnSemverRange =>
+        semver.satisfies(normalizedVersion, vulnSemverRange)
+      );
+      return hasMatchingVersion;
+    });
+
+    const vulns = matchingVulns.map(vuln => {
         return {
           severity: vuln.severity,
           numericSeverity: this.severityMap[vuln.severity],
