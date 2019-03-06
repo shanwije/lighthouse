@@ -16,6 +16,8 @@ const Audit = require('../audit');
 const Sentry = require('../../lib/sentry');
 const semver = require('semver');
 const snykDatabase = require('../../../third-party/snyk/snapshot.json');
+/** @type {?SnykDB} */
+let snykDBForTest;
 
 const SEMVER_REGEX = /^(\d+\.\d+\.\d+)[^-0-9]+/;
 
@@ -44,7 +46,14 @@ class NoVulnerableLibrariesAudit extends Audit {
    * @return {SnykDB}
    */
   static get snykDB() {
-    return snykDatabase;
+    return snykDBForTest || snykDatabase;
+  }
+
+  /**
+   * @param {?SnykDB} mockSnykDb
+   */
+  static setSnykDBForTest(mockSnykDb) {
+    snykDBForTest = mockSnykDb;
   }
 
   /**
@@ -100,7 +109,8 @@ class NoVulnerableLibrariesAudit extends Audit {
     // Match the vulnerability candidates from snyk against the version we see in the page
     const vulnCandidatesForLib = snykDB.npm[lib.npmPkgName];
     const matchingVulns = vulnCandidatesForLib.filter(vulnCandidate => {
-      // Each snyk vulnerability comes with an array of semver ranges.
+      // Each snyk vulnerability comes with an array of semver ranges
+      // The page is vulnerable if any of the ranges match.
       const hasMatchingVersion = vulnCandidate.semver.vulnerable.some(vulnSemverRange =>
         semver.satisfies(normalizedVersion, vulnSemverRange)
       );

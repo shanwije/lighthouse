@@ -5,7 +5,8 @@
  */
 'use strict';
 
-const NoVulnerableLibrariesAudit = require('../../../audits/dobetterweb/no-vulnerable-libraries.js');
+const NoVulnerableLibrariesAudit =
+  require('../../../audits/dobetterweb/no-vulnerable-libraries.js');
 const assert = require('assert');
 
 /* eslint-env jest */
@@ -39,30 +40,45 @@ describe('Avoids front-end JavaScript libraries with known vulnerabilities', () 
     assert.equal(auditResult.details.items[0].highestSeverity, 'High');
     assert.equal(auditResult.details.items[0].detectedLib.type, 'link');
     assert.equal(auditResult.details.items[0].detectedLib.text, 'angular@1.1.4');
-    assert.equal(
-      auditResult.details.items[0].detectedLib.url,
-      'https://snyk.io/vuln/npm:angular?lh=1.1.4&utm_source=lighthouse&utm_medium=ref&utm_campaign=audit'
-    );
+    assert.equal(auditResult.details.items[0].detectedLib.url, 'https://snyk.io/vuln/npm:angular?lh=1.1.4&utm_source=lighthouse&utm_medium=ref&utm_campaign=audit');
   });
 
-  it('fails when JS libraries w/ vulnerabilities are detected (in the semver range array)', () => {
-    const auditResult = NoVulnerableLibrariesAudit.audit({
-      JSLibraries: [{name: 'Bootstrap', version: '4.0.0-alpha', npmPkgName: 'bootstrap'}],
+  describe('handles vuln details correctly', () => {
+    // Vulnerability with an array of semver ranges
+    const mockSnykDb = {
+      npm: {
+        badlib: [
+          {id: 'badlibvuln:12345', severity: 'medium', semver: {vulnerable: ['<2', '>=3.0.0']}},
+        ],
+      },
+    };
+    beforeEach(() => {
+      origSnykDb = NoVulnerableLibrariesAudit.snykDB;
+      NoVulnerableLibrariesAudit.setSnykDBForTest(mockSnykDb);
     });
-    expect(auditResult.details.items).toMatchInlineSnapshot(`
+    afterEach(() => {
+      NoVulnerableLibrariesAudit.setSnykDBForTest(undefined);
+    });
+
+    it('fails when libraries w/ vulnerabilities are detected (in the semver range array)', () => {
+      const auditResult = NoVulnerableLibrariesAudit.audit({
+        JSLibraries: [{name: 'Badlib', version: '3.0.0', npmPkgName: 'badlib'}],
+      });
+      expect(auditResult.details.items).toMatchInlineSnapshot(`
 Array [
   Object {
     "detectedLib": Object {
-      "text": "Bootstrap@4.0.0-alpha",
+      "text": "Badlib@3.0.0",
       "type": "link",
-      "url": "https://snyk.io/vuln/npm:bootstrap?lh=4.0.0-alpha&utm_source=lighthouse&utm_medium=ref&utm_campaign=audit",
+      "url": "https://snyk.io/vuln/npm:badlib?lh=3.0.0&utm_source=lighthouse&utm_medium=ref&utm_campaign=audit",
     },
     "highestSeverity": "Medium",
     "vulnCount": 1,
   },
 ]
 `);
-    assert.equal(auditResult.rawValue, false);
+      assert.equal(auditResult.rawValue, false);
+    });
   });
 
   it('handles ill-specified versions', () => {
