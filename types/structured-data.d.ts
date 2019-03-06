@@ -4,12 +4,28 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
-declare module 'jsonld' {
-  type CallbackFn = (err: null|Error, result?: any) => void
+import LHError = require('../lighthouse-core/lib/lh-error.js');
 
-  interface JsonldOptions {
-    documentLoader: (url: string, callback: CallbackFn) => void
+declare global {
+  module LH {
+    module StructuredData {
+      export interface ExpandedSchemaRepresentationItem {
+        [schemaRef: string]: Array<
+          | string
+          | {
+              '@id'?: string;
+              '@type'?: string;
+              '@value'?: string;
+            }
+        >;
+      }
+
+      export type ExpandedSchemaRepresentation =
+        | Array<ExpandedSchemaRepresentationItem>
+        | ExpandedSchemaRepresentationItem;
+    }
   }
-
-  export function expand(object: any, options: JsonldOptions): Promise<any>;
 }
+
+// empty export to keep file a module
+export {};

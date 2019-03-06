@@ -43,7 +43,7 @@ function documentLoader(schemaUrl, callback) {
  * (https://json-ld.org/spec/latest/json-ld-api/#expansion).
  *
  * @param {any} inputObject
- * @returns {Promise<any>}
+ * @returns {Promise<LH.StructuredData.ExpandedSchemaRepresentation|null>}
  */
 module.exports = async function expand(inputObject) {
   try {

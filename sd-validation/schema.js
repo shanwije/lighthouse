@@ -110,7 +110,7 @@ function validateObjectKeys(typeOrTypes, keys) {
 }
 
 /**
- * @param {any} expandedObj Valid JSON-LD object in expanded form
+ * @param {LH.StructuredData.ExpandedSchemaRepresentation|null} expandedObj Valid JSON-LD object in expanded form
  * @return {Array<{path: string, message: string}>}
  */
 module.exports = function validateSchemaOrg(expandedObj) {
@@ -121,7 +121,7 @@ module.exports = function validateSchemaOrg(expandedObj) {
     return errors;
   }
 
-  if (expandedObj.length === 1) {
+  if (Array.isArray(expandedObj) && expandedObj.length === 1) {
     expandedObj = expandedObj[0];
   }
 

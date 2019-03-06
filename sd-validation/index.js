@@ -46,6 +46,7 @@ module.exports = async function validate(textInput) {
   }
 
   // STEP 3: EXPAND
+  /** @type {LH.StructuredData.ExpandedSchemaRepresentation|null} */
   let expandedObj = null;
   try {
     expandedObj = await expandAsync(inputObject);
