@@ -19,20 +19,15 @@ const validateSchemaOrg = require('./schema.js');
  * @returns {Promise<Array<{path: ?string, validator: ValidatorType, message: string}>>}
  */
 module.exports = async function validate(textInput) {
-  /** @type {Array<{path: ?string, validator: ValidatorType, message: string}>} */
-  const errors = [];
-
   // STEP 1: VALIDATE JSON
   const parseError = parseJSON(textInput);
 
   if (parseError) {
-    errors.push({
+    return [{
       validator: 'json',
       path: parseError.line,
       message: parseError.message,
-    });
-
-    return errors;
+    }];
   }
 
   const inputObject = JSON.parse(textInput);
@@ -41,15 +36,13 @@ module.exports = async function validate(textInput) {
   const jsonLdErrors = validateJsonLD(inputObject);
 
   if (jsonLdErrors.length) {
-    jsonLdErrors.forEach(error => {
-      errors.push({
-        validator: 'json-ld',
+    return jsonLdErrors.map(error => {
+      return {
+        validator: /** @type {ValidatorType} */ ('json-ld'),
         path: error.path,
         message: error.message,
-      });
+      };
     });
-
-    return errors;
   }
 
   // STEP 3: EXPAND
@@ -57,29 +50,25 @@ module.exports = async function validate(textInput) {
   try {
     expandedObj = await expandAsync(inputObject);
   } catch (error) {
-    errors.push({
+    return [{
       validator: 'json-ld-expand',
       path: null,
       message: error.message,
-    });
-
-    return errors;
+    }];
   }
 
   // STEP 4: VALIDATE SCHEMA
   const schemaOrgErrors = validateSchemaOrg(expandedObj);
 
   if (schemaOrgErrors.length) {
-    schemaOrgErrors.forEach(error => {
-      errors.push({
-        validator: 'schema-org',
+    return schemaOrgErrors.map(error => {
+      return {
+        validator: /** @type {ValidatorType} */ ('schema-org'),
         path: error.path,
         message: error.message,
-      });
+      };
     });
-
-    return errors;
   }
 
-  return errors;
+  return [];
 };
