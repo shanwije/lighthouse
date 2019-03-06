@@ -56,6 +56,17 @@ function processData(data) {
     return [];
   }
 
+  // Go through all the graph entries to find the valid types and properties.
+  // i.e. this converts
+  // [
+  //   {@id: 'http://schema.org/CafeOrCoffeeShop', @type: 'rdfs:Class', rdfs:subClassOf: {@id: 'http://schema.org/FoodEstablishment'}},
+  //   {@id: 'http://schema.org/bestRating', @type: 'rdfs:Property', http://schema.org/domainIncludes: {@id: 'http://schema.org/Rating'}},
+  // ]
+  // into
+  // {
+  //   types: [{name: 'CafeOrCoffeeShop', parent: ['FoodEstablishment']}],
+  //   properties: [{name: 'bestRating', parent: ['Rating']}],
+  // }
   data['@graph'].forEach(item => {
     if (item['rdfs:label'] === undefined) {
       return;
