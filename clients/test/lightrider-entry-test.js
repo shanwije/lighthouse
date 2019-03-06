@@ -6,7 +6,9 @@
 'use strict';
 
 const assert = require('assert');
+const sinon = require('sinon');
 const lhBackground = require('../lightrider-entry.js');
+const Runner = require('../../lighthouse-core/runner.js');
 const LHError = require('../../lighthouse-core/lib/lh-error.js');
 
 /* eslint-env mocha */
@@ -55,6 +57,19 @@ describe('lightrider-entry', () => {
       const parsedResult = JSON.parse(result);
       assert.strictEqual(parsedResult.runtimeError.code, LHError.UNKNOWN_ERROR);
       assert.ok(parsedResult.runtimeError.message.includes(errorMsg));
+    });
+
+    it('specifies the channel as lr', async () => {
+      const runStub = sinon.stub(Runner, 'run');
+
+      const mockConnection = {};
+      const url = 'https://example.com';
+
+      await lhBackground.runLighthouseInLR(mockConnection, url, {}, {});
+      const config = runStub.lastCall.args[1].config;
+      assert.equal(config.settings.channel, 'lr');
+
+      runStub.reset();
     });
   });
 });
