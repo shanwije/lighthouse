@@ -61,14 +61,14 @@ declare global {
     interface ThrottlingSettings {
       /** The round trip time in milliseconds. */
       rttMs?: number;
-      /** The network throughput in kilobytes per second. */
+      /** The network throughput in kilobits per second. */
       throughputKbps?: number;
       // devtools settings
       /** The network request latency in milliseconds. */
       requestLatencyMs?: number;
-      /** The network download throughput in kilobytes per second. */
+      /** The network download throughput in kilobits per second. */
       downloadThroughputKbps?: number;
-      /** The network upload throughput in kilobytes per second. */
+      /** The network upload throughput in kilobits per second. */
       uploadThroughputKbps?: number;
       // used by both
       /** The amount of slowdown applied to the cpu (1/<cpuSlowdownMultiplier>). */
@@ -93,6 +93,8 @@ declare global {
       output?: OutputMode|OutputMode[];
       /** The locale to use for the output. */
       locale?: Locale;
+      /** The maximum amount of time to wait for a page content render, in ms. If no content is rendered within this limit, the run is aborted with an error. */
+      maxWaitForFcp?: number;
       /** The maximum amount of time to wait for a page to load, in ms. */
       maxWaitForLoad?: number;
       /** List of URL patterns to block. */

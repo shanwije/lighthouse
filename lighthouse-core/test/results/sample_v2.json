@@ -5,15 +5,11 @@
     "hostUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3358.0 Safari/537.36",
     "benchmarkIndex": 1000
   },
-  "lighthouseVersion": "4.1.0",
+  "lighthouseVersion": "4.2.0",
   "fetchTime": "2018-03-13T00:55:45.840Z",
   "requestedUrl": "http://localhost:10200/dobetterweb/dbw_tester.html",
   "finalUrl": "http://localhost:10200/dobetterweb/dbw_tester.html",
   "runWarnings": [],
-  "runtimeError": {
-    "code": "NO_ERROR",
-    "message": ""
-  },
   "audits": {
     "is-on-https": {
       "id": "is-on-https",
@@ -3164,6 +3160,7 @@
     "output": [
       "json"
     ],
+    "maxWaitForFcp": 15000,
     "maxWaitForLoad": 45000,
     "throttlingMethod": "devtools",
     "throttling": {
